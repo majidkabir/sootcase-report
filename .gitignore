@@ -1,0 +1,3 @@
+/sootcase-report
+*.pdf
+!docs/sample.pdf

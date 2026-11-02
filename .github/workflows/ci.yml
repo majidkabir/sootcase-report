@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  schedule:
+    - cron: "23 5 * * 1" # weekly, to catch API changes in Sootcase
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out Sootcase
+        uses: actions/checkout@v4
+        with:
+          repository: majidkabir/Sootcase
+          path: sootcase
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Install poppler (PDF text checks)
+        run: sudo apt-get update -q && sudo apt-get install -yq poppler-utils
+
+      - name: Start a local Sootcase server
+        run: |
+          (cd sootcase && go build -o /tmp/sootcase ./cmd/sootcase)
+          /tmp/sootcase serve -addr :8080 > /tmp/sootcase.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf localhost:8080/healthz && break; sleep 1; done
+
+      - run: rm -rf sootcase
+      - run: test -z "$(gofmt -l .)"
+      - run: go vet ./...
+      - run: go test ./...
+        env:
+          SOOTCASE_TEST_URL: http://localhost:8080
+
+      - name: Sample report
+        run: go run ./cmd/sootcase-report -url http://localhost:8080 -org "Example Freight" -from 2026-01-01 -to 2026-03-31 -scope3 4 -o sample.pdf testdata/shipments.csv
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sample-report
+          path: sample.pdf
+
+  image:
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/sootcase-report
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
