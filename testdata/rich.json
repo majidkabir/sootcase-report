@@ -1,0 +1,490 @@
+{
+ "title": "Freight GHG emissions report",
+ "organisation": "Rich",
+ "period": {},
+ "level": "transport_or_hub_services",
+ "statement": "Calculated with Sootcase following the GLEC Framework v3.3 and ISO 14083:2023 methodology. Conformity with ISO 14083 is not declared by this report.",
+ "reference": "Per-shipment results with factors, sources and distances: Sootcase batch output for the same input. Method: https://github.com/majidkabir/sootcase",
+ "datasets": [
+  "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+ ],
+ "generated": "2026-11-10T18:16:36Z",
+ "coverage": {
+  "shipments": 6,
+  "calculated": 6,
+  "failed": 0,
+  "legs": 6,
+  "hub_stops": 2,
+  "weight_t": 69
+ },
+ "total": {
+  "wtw_kg": 3138.0012621116903,
+  "transport_wtw_kg": 2569.10126211169,
+  "ttw_kg": 1968.2725152011271,
+  "wtt_kg": 600.8287469105628,
+  "hub_wtw_kg": 568.9,
+  "tonne_km": 175800,
+  "intensity_g_per_tkm": 14.613772822023266,
+  "distance_types": {
+   "actual": 0.011376564277588168,
+   "sfd": 0.9630261660978384,
+   "unspecified": 0.025597269624573378
+  }
+ },
+ "modes": [
+  {
+   "mode": "road",
+   "legs": 5,
+   "tonne_km": 15800,
+   "ttw_kg": 1001.8725152011273,
+   "wtt_kg": 392.82874691056276,
+   "wtw_kg": 1394.70126211169,
+   "intensity_g_per_tkm": 88.27223177922089,
+   "distance_types": {
+    "actual": 0.12658227848101267,
+    "sfd": 0.5886075949367089,
+    "unspecified": 0.2848101265822785
+   }
+  },
+  {
+   "mode": "sea",
+   "legs": 1,
+   "tonne_km": 160000,
+   "ttw_kg": 966.4,
+   "wtt_kg": 208.0000000000001,
+   "wtw_kg": 1174.4,
+   "intensity_g_per_tkm": 7.34,
+   "distance_types": {
+    "sfd": 1
+   }
+  }
+ ],
+ "hubs": [
+  {
+   "hub_type": "warehouse",
+   "stops": 1,
+   "tonnes": 15,
+   "wtw_kg": 532.5,
+   "intensity_g_per_t": 35500
+  },
+  {
+   "hub_type": "intermodal_terminal",
+   "stops": 1,
+   "tonnes": 20,
+   "wtw_kg": 36.4,
+   "intensity_g_per_t": 1820
+  }
+ ],
+ "energy_carriers": [
+  {
+   "carrier": "unspecified",
+   "ttw_kg": 1594.1085152011271,
+   "wtt_kg": 469.8091469105629,
+   "wtw_kg": 2063.9176621116903,
+   "share": 0.803361740757248
+  },
+  {
+   "carrier": "glec/fuel/eu/diesel/l",
+   "ttw_kg": 374.164,
+   "wtt_kg": 112.714,
+   "wtw_kg": 486.878,
+   "share": 0.18951296594662342
+  },
+  {
+   "carrier": "electricity/DNK",
+   "ttw_kg": 0,
+   "wtt_kg": 18.3056,
+   "wtw_kg": 18.3056,
+   "share": 0.007125293296128619
+  }
+ ],
+ "data_quality": {
+  "primary_share": 0.18479215002283847,
+  "modelled_share": 0.12581998193525173,
+  "default_share": 0.6893878680419098,
+  "default_sources": [
+   {
+    "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, Tables 18-19, container vessels (Clean Cargo trade lane factors, reporting year 2025): industry average (origin-destination pair unknown), dry, 13 + 60.4 g CO2e/TEU-km (WTT + TTW) / 10 t per TEU (GLEC's average when the cargo mass is not known); includes GLEC's +15% distance conversion, so it is per shortest feasible distance",
+    "wtw_kg": 1174.4,
+    "share": 0.37425096483539905
+   },
+   {
+    "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, Table 3, logistics hubs (GILA project: Fraunhofer IML, Politecnico di Milano, GreenRouter; median values): warehouse, ambient (n = 92)",
+    "wtw_kg": 532.5,
+    "share": 0.16969400440637772
+   },
+   {
+    "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, road, temperature-controlled: glec/road/eu_sa/rigid_26_32t/diesel with GLEC's +12% uplift for temperature-controlled vehicles over 3.5 t GVW (p. 106; given for Europe, South America, Asia and Africa); includes GLEC's +5% distance conversion, so it is per shortest feasible distance",
+    "wtw_kg": 420,
+    "share": 0.1338431584050303
+   },
+   {
+    "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, Table 3, logistics hubs (GILA project; market study by EcoTransIT World 2025, conducted and updated by SGKV and Fraunhofer IML 2026): intermodal terminals (sea and inland ports), ambient (n = 84), 18.2 kg CO2e per container",
+    "wtw_kg": 36.4,
+    "share": 0.011599740395102627
+   }
+  ],
+  "models": [
+   {
+    "model": "Energy-based model: electricity per tonne-km times the country's grid intensity",
+    "legs": 1,
+    "wtw_kg": 18.3056,
+    "parameters": {
+     "countries": "DNK",
+     "energy_kwh_per_tkm": "0.08",
+     "grid_intensity_source": "dataset grid table (default)",
+     "vehicle_classes": "hgv"
+    }
+   },
+   {
+    "model": "Activity-based load model: per vehicle-km emissions interpolated between 0%, 50% and 100% laden, payload derived from the dataset (see the dataset's load_models)",
+    "legs": 1,
+    "wtw_kg": 376.5176621116901,
+    "parameters": {
+     "empty_trip_factor": "0",
+     "load_factor": "0.901",
+     "load_factor_source": "given per leg (primary)",
+     "vehicle_and_energy_profile": "from the dataset (default)",
+     "vehicle_classes": "hgv_artic"
+    }
+   }
+  ]
+ },
+ "distance_adjustments": [
+  {
+   "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 1 Chapter 4 (road): when the emission intensity is based on actual distance, a DAF must be applied; 5% as in GLEC's own road default values (Section 3 Module 2), which include a +5% distance conversion between actual and shortest feasible distance",
+   "legs": 1,
+   "min": 1.05,
+   "max": 1.05
+  }
+ ],
+ "ghg_protocol": {
+  "scope3_shipper_kg": 3138.0012621116903,
+  "operator_scope1_kg": 1968.2725152011271,
+  "operator_scope2_kg": 18.3056,
+  "operator_scope3_cat3_kg": 582.5231469105629,
+  "hubs_kg": 568.9
+ },
+ "notes": [
+  "Hub emissions are reported well-to-wheel only: the hub factors used carry no split into operational and energy provision emissions. Operational (TTW) and energy provision (WTT) totals therefore cover transport only.",
+  "For 2.6% of tonne-km the type of distance was not stated (distances given without distance_type).",
+  "Tonne-km combine more than one type of distance; see the shares per mode.",
+  "Where a leg's distance type differed from the basis of its emission intensity, a distance adjustment factor was applied; these are listed with their sources.",
+  "Default emission intensities are used where no primary data (measured fuel or operation category values) was supplied for a leg or hub; their sources are listed."
+ ],
+ "results": [
+  {
+   "shipment_id": "E1",
+   "result": {
+    "shipment_id": "E1",
+    "weight_kg": 8000,
+    "weight_basis": "weight",
+    "legs": [
+     {
+      "leg_id": "l1",
+      "mode": "road",
+      "vehicle_type": "hgv",
+      "distance_km": 250,
+      "distance_method": "given",
+      "distance_type": "actual",
+      "tonne_km": 2000,
+      "ttw_kg": 0,
+      "wtt_kg": 18.3056,
+      "wtw_kg": 18.3056,
+      "intensity_g_per_tkm": 9.1528,
+      "method": "energy",
+      "data_type": "modelled",
+      "factor": {
+       "mode": "road",
+       "vehicle_type": "hgv",
+       "ttw_g_per_tkm": 0,
+       "wtt_g_per_tkm": 9.1528,
+       "source": "0.08 kWh/tkm x DNK grid 114.41 g/kWh (2025, Ember via Our World in Data: Denmark)",
+       "year": 2025
+      },
+      "energy_kwh_per_tkm": 0.08,
+      "country": "DNK"
+     }
+    ],
+    "tonne_km": 2000,
+    "ttw_kg": 0,
+    "wtt_kg": 18.3056,
+    "wtw_kg": 18.3056,
+    "intensity_g_per_tkm": 9.1528,
+    "ghg_protocol": {
+     "scope3_shipper_kg": 18.3056,
+     "operator_scope1_kg": 0,
+     "operator_scope2_kg": 18.3056,
+     "operator_scope3_cat3_kg": 0
+    },
+    "primary_data_share": 0,
+    "dataset": "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+   }
+  },
+  {
+   "shipment_id": "F1",
+   "result": {
+    "shipment_id": "F1",
+    "weight_kg": 12000,
+    "weight_basis": "weight",
+    "legs": [
+     {
+      "leg_id": "l1",
+      "factor_note": "\"diesel\": no country known for the leg's ends, so glec/fuel/eu/diesel/l.",
+      "mode": "road",
+      "vehicle_type": "hgv",
+      "distance_km": 400,
+      "distance_method": "given",
+      "distance_type": "sfd",
+      "tonne_km": 4800,
+      "ttw_kg": 374.164,
+      "wtt_kg": 112.714,
+      "wtw_kg": 486.878,
+      "intensity_g_per_tkm": 101.43291666666667,
+      "method": "fuel",
+      "data_type": "primary",
+      "fuel_factor": {
+       "fuel": "glec/fuel/eu/diesel/l",
+       "unit": "l",
+       "ttw_kg_per_unit": 2.6726,
+       "wtt_kg_per_unit": 0.8051,
+       "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 1, GHG emission factors: European sources (pp. 77-78; ifeu, infras & Fraunhofer IML 2025): diesel, 3.22 kg CO2e/kg TTW, 4.19 kg CO2e/kg WTW, \u00d7 0.83 kg/l (GLEC's density) per litre",
+       "year": 2026
+      },
+      "allocation_share": 1
+     }
+    ],
+    "tonne_km": 4800,
+    "ttw_kg": 374.164,
+    "wtt_kg": 112.714,
+    "wtw_kg": 486.878,
+    "intensity_g_per_tkm": 101.43291666666667,
+    "ghg_protocol": {
+     "scope3_shipper_kg": 486.878,
+     "operator_scope1_kg": 374.164,
+     "operator_scope2_kg": 0,
+     "operator_scope3_cat3_kg": 112.714
+    },
+    "primary_data_share": 1,
+    "dataset": "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+   }
+  },
+  {
+   "shipment_id": "O1",
+   "result": {
+    "shipment_id": "O1",
+    "weight_kg": 5000,
+    "weight_basis": "weight",
+    "legs": [
+     {
+      "leg_id": "l1",
+      "mode": "road",
+      "vehicle_type": "hgv",
+      "distance_km": 300,
+      "distance_method": "given",
+      "tonne_km": 1500,
+      "ttw_kg": 0,
+      "wtt_kg": 93,
+      "wtw_kg": 93,
+      "intensity_g_per_tkm": 62,
+      "method": "intensity",
+      "data_type": "primary",
+      "factor": {
+       "mode": "road",
+       "vehicle_type": "hgv",
+       "ttw_g_per_tkm": 0,
+       "wtt_g_per_tkm": 62,
+       "source": "Own value: Carrier X 2025 report",
+       "year": 0,
+       "data_type": "primary"
+      }
+     }
+    ],
+    "tonne_km": 1500,
+    "ttw_kg": 0,
+    "wtt_kg": 93,
+    "wtw_kg": 93,
+    "intensity_g_per_tkm": 62,
+    "ghg_protocol": {
+     "scope3_shipper_kg": 93,
+     "operator_scope1_kg": 0,
+     "operator_scope2_kg": 0,
+     "operator_scope3_cat3_kg": 93
+    },
+    "primary_data_share": 1,
+    "dataset": "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+   }
+  },
+  {
+   "shipment_id": "L1",
+   "result": {
+    "shipment_id": "L1",
+    "weight_kg": 9000,
+    "weight_basis": "weight",
+    "legs": [
+     {
+      "leg_id": "l1",
+      "mode": "road",
+      "vehicle_type": "hgv_artic",
+      "distance_km": 500,
+      "distance_method": "given",
+      "distance_type": "sfd",
+      "daf": 1.05,
+      "daf_source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 1 Chapter 4 (road): when the emission intensity is based on actual distance, a DAF must be applied; 5% as in GLEC's own road default values (Section 3 Module 2), which include a +5% distance conversion between actual and shortest feasible distance",
+      "tonne_km": 4500,
+      "ttw_kg": 305.1485152011273,
+      "wtt_kg": 71.36914691056279,
+      "wtw_kg": 376.5176621116901,
+      "intensity_g_per_tkm": 83.67059158037557,
+      "method": "load_model",
+      "data_type": "modelled",
+      "factor": {
+       "mode": "road",
+       "vehicle_type": "hgv_non_refrigerated_all_diesel/average_non_refrigerated_artics",
+       "ttw_g_per_tkm": 64.58169633886291,
+       "wtt_g_per_tkm": 15.104581356732881,
+       "source": "load model (load 16 t, 90% of the model's payload, empty trip factor 0, payload 17.8 t) from DESNZ 2026: Freighting goods > HGV (non-refrigerated, all diesel) > Average non-refrigerated artics (per km at 0/50/100% laden; payload from 100% laden per tonne.km)",
+       "year": 2026,
+       "distance_basis": "actual"
+      },
+      "load_factor": 0.9009934144430383,
+      "load_tonnes": 16,
+      "payload_t": 17.7581764123
+     }
+    ],
+    "tonne_km": 4500,
+    "ttw_kg": 305.1485152011273,
+    "wtt_kg": 71.36914691056279,
+    "wtw_kg": 376.5176621116901,
+    "intensity_g_per_tkm": 83.67059158037557,
+    "ghg_protocol": {
+     "scope3_shipper_kg": 376.5176621116901,
+     "operator_scope1_kg": 305.1485152011273,
+     "operator_scope2_kg": 0,
+     "operator_scope3_cat3_kg": 71.36914691056279
+    },
+    "primary_data_share": 0,
+    "dataset": "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+   }
+  },
+  {
+   "shipment_id": "T1",
+   "result": {
+    "shipment_id": "T1",
+    "weight_kg": 20000,
+    "weight_basis": "teu",
+    "teu": 2,
+    "legs": [
+     {
+      "leg_id": "l1",
+      "factor_note": "Cargo type \"container\": the dataset has no value for it with glec/sea/container/industry_average/dry, so that vehicle's own value is used.",
+      "mode": "sea",
+      "vehicle_type": "container_ship",
+      "distance_km": 8000,
+      "distance_method": "given",
+      "distance_type": "sfd",
+      "tonne_km": 160000,
+      "ttw_kg": 966.4,
+      "wtt_kg": 208.0000000000001,
+      "wtw_kg": 1174.4,
+      "intensity_g_per_tkm": 7.34,
+      "method": "intensity",
+      "data_type": "default",
+      "factor": {
+       "mode": "sea",
+       "vehicle_type": "glec/sea/container/industry_average/dry",
+       "ttw_g_per_tkm": 6.04,
+       "wtt_g_per_tkm": 1.3,
+       "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, Tables 18-19, container vessels (Clean Cargo trade lane factors, reporting year 2025): industry average (origin-destination pair unknown), dry, 13 + 60.4 g CO2e/TEU-km (WTT + TTW) / 10 t per TEU (GLEC's average when the cargo mass is not known); includes GLEC's +15% distance conversion, so it is per shortest feasible distance",
+       "year": 2026,
+       "distance_basis": "sfd"
+      }
+     }
+    ],
+    "hubs": [
+     {
+      "hub_id": "ctT",
+      "hub_type": "intermodal_terminal",
+      "note": "Cargo type \"container\": the dataset has no value for it at a intermodal_terminal hub, so that hub type's own value is used.",
+      "containers": 2,
+      "wtw_kg": 36.4,
+      "data_type": "default",
+      "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, Table 3, logistics hubs (GILA project; market study by EcoTransIT World 2025, conducted and updated by SGKV and Fraunhofer IML 2026): intermodal terminals (sea and inland ports), ambient (n = 84), 18.2 kg CO2e per container"
+     }
+    ],
+    "tonne_km": 160000,
+    "ttw_kg": 966.4,
+    "wtt_kg": 208.0000000000002,
+    "wtw_kg": 1210.8000000000002,
+    "intensity_g_per_tkm": 7.34,
+    "ghg_protocol": {
+     "scope3_shipper_kg": 1210.8000000000002,
+     "operator_scope1_kg": 966.4,
+     "operator_scope2_kg": 0,
+     "operator_scope3_cat3_kg": 208.0000000000001,
+     "hubs_kg": 36.4
+    },
+    "primary_data_share": 0,
+    "dataset": "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+   }
+  },
+  {
+   "shipment_id": "R1",
+   "result": {
+    "shipment_id": "R1",
+    "weight_kg": 15000,
+    "weight_basis": "weight",
+    "legs": [
+     {
+      "leg_id": "l1",
+      "factor_note": "Cargo type \"temperature_controlled\": glec/road/eu_sa/temperature_controlled/rigid_26_32t/diesel.",
+      "mode": "road",
+      "vehicle_type": "hgv",
+      "distance_km": 200,
+      "distance_method": "given",
+      "tonne_km": 3000,
+      "ttw_kg": 322.56,
+      "wtt_kg": 97.44,
+      "wtw_kg": 420,
+      "intensity_g_per_tkm": 140,
+      "method": "intensity",
+      "data_type": "default",
+      "factor": {
+       "mode": "road",
+       "vehicle_type": "glec/road/eu_sa/temperature_controlled/rigid_26_32t/diesel",
+       "ttw_g_per_tkm": 107.52,
+       "wtt_g_per_tkm": 32.48,
+       "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, road, temperature-controlled: glec/road/eu_sa/rigid_26_32t/diesel with GLEC's +12% uplift for temperature-controlled vehicles over 3.5 t GVW (p. 106; given for Europe, South America, Asia and Africa); includes GLEC's +5% distance conversion, so it is per shortest feasible distance",
+       "year": 2026,
+       "distance_basis": "sfd"
+      }
+     }
+    ],
+    "hubs": [
+     {
+      "hub_id": "w1",
+      "hub_type": "warehouse",
+      "note": "Cargo type \"temperature_controlled\": the dataset has no value for it at a warehouse hub, so that hub type's own value is used.",
+      "wtw_kg": 532.5,
+      "data_type": "default",
+      "source": "GLEC Framework v3.3 (Smart Freight Centre, 2026), Section 3 Module 2, Table 3, logistics hubs (GILA project: Fraunhofer IML, Politecnico di Milano, GreenRouter; median values): warehouse, ambient (n = 92)"
+     }
+    ],
+    "tonne_km": 3000,
+    "ttw_kg": 322.56,
+    "wtt_kg": 97.44000000000005,
+    "wtw_kg": 952.5,
+    "intensity_g_per_tkm": 140,
+    "ghg_protocol": {
+     "scope3_shipper_kg": 952.5,
+     "operator_scope1_kg": 322.56,
+     "operator_scope2_kg": 0,
+     "operator_scope3_cat3_kg": 97.44,
+     "hubs_kg": 532.5
+    },
+    "primary_data_share": 0,
+    "dataset": "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
+   }
+  }
+ ]
+}
