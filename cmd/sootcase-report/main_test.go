@@ -67,6 +67,7 @@ func TestRunArguments(t *testing.T) {
 		{"-scope3", "5", "x.csv"},
 		{"-json", "x.json", "x.csv"},
 		{"a.csv", "b.csv"},
+		{"-json", "../../testdata/report.json", "-org", "Other"},
 	} {
 		if err := run(args, nil, io.Discard); err == nil {
 			t.Errorf("%v: no error", args)

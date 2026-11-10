@@ -34,7 +34,7 @@ HAM-MIL-RAIL,,dc,,,,,,warehouse
 | `-declare-iso` | add the ISO 14083:2023 conformity statement; only you can vouch for your data and boundaries |
 | `-road-legs=false` | don't let Sootcase add missing road legs (to ports, terminals, airports) |
 | `-save-json q1.json` | keep the API's full answer, with every shipment's result |
-| `-json q1.json` | make the PDF again from a saved answer, without calling the API |
+| `-json q1.json` | make the PDF again from a saved answer, without calling the API (the calculation flags above don't apply then) |
 | `-url` | another Sootcase server, e.g. your own `sootcase serve` (env `SOOTCASE_URL`) |
 | `-o -` | write the PDF to stdout |
 
