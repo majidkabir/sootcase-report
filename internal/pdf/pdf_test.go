@@ -2,6 +2,7 @@ package pdf
 
 import (
 	"bytes"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -37,6 +38,13 @@ func TestWrap(t *testing.T) {
 	}
 	if got := Wrap(Regular, 10, "a\n\nb", 100); len(got) != 3 {
 		t.Errorf("newlines: %q", got)
+	}
+	// Narrower than one character: one character per line, and it ends.
+	if got := Wrap(Regular, 10, "abc de", 1); strings.Join(got, "") != "abcde" || len(got) != 5 {
+		t.Errorf("narrow: %q", got)
+	}
+	if got := Wrap(Regular, 10, "W", 0); len(got) != 1 || got[0] != "W" {
+		t.Errorf("zero width: %q", got)
 	}
 }
 
@@ -92,6 +100,25 @@ func TestDocumentStructure(t *testing.T) {
 	for _, s := range []string{"Hello (world) \\ København", "Page two"} {
 		if !strings.Contains(string(out), s) {
 			t.Errorf("text %q not in %q", s, out)
+		}
+	}
+}
+
+// Random text and widths must neither hang nor lose characters.
+func TestWrapRandom(t *testing.T) {
+	rs := []rune("ab cdéæ€中→\t W—x ")
+	rnd := rand.New(rand.NewSource(1))
+	for i := 0; i < 3000; i++ {
+		b := make([]rune, rnd.Intn(40))
+		for j := range b {
+			b[j] = rs[rnd.Intn(len(rs))]
+		}
+		s := string(b)
+		for _, w := range []float64{0, 1, 5, 30, 200} {
+			got := strings.Join(Wrap(Regular, 9, s, w), "")
+			if strings.Join(strings.Fields(got), "") != strings.Join(strings.Fields(s), "") {
+				t.Fatalf("Wrap(%q, %v) lost text: %q", s, w, got)
+			}
 		}
 	}
 }

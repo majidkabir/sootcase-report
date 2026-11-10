@@ -147,8 +147,9 @@ func Wrap(f Font, size float64, s string, maxW float64) []string {
 			if line != "" {
 				out = append(out, line)
 			}
-			// A word wider than the line is split.
-			for Width(f, size, word) > maxW {
+			// A word wider than the line is split, keeping at least one
+			// character per line so a line narrower than a character ends.
+			for len([]rune(word)) > 1 && Width(f, size, word) > maxW {
 				r := []rune(word)
 				n := len(r) - 1
 				for n > 1 && Width(f, size, string(r[:n])) > maxW {

@@ -488,7 +488,7 @@ func dataQuality(l *layout, r *sootcase.Report) {
 	l.need(40)
 	x := margin
 	for i, s := range shares {
-		w := s * contentW
+		w := math.Max(0, math.Min(s*contentW, margin+contentW-x)) // rounding can't push past the margin
 		l.d.Rect(x, l.y, w, 16, dqCols[i])
 		if w > 40 {
 			c := white
