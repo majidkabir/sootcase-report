@@ -108,12 +108,26 @@ func TestLongTablesBreakAcrossPages(t *testing.T) {
 		t.Error("failure count heading")
 	}
 	m := regexp.MustCompile(`Page 1 of (\d+)`).FindStringSubmatch(txt)
-	if n, _ := strconv.Atoi(m[1]); m == nil || n < 5 {
+	if m == nil {
+		t.Fatal("no page numbers")
+	}
+	if n, _ := strconv.Atoi(m[1]); n < 5 {
 		t.Errorf("expected several pages, got %v", m)
 	}
 	// The table header is repeated on the next page.
 	if h := regexp.MustCompile(`(?m)^\s*Source\s+WTW kg CO2e\s+Share\s*$`).FindAllString(txt, -1); len(h) < 2 {
 		t.Errorf("header not repeated: %d", len(h))
+	}
+}
+
+func TestLongOrganisationFitsFooter(t *testing.T) {
+	r := load(t)
+	r.Organisation = strings.Repeat("Very Long Organisation Name ", 10)
+	txt, _ := text(t, r)
+	for _, line := range strings.Split(txt, "\n") {
+		if strings.Contains(line, "Page 1 of") && !strings.Contains(line, "…") {
+			t.Errorf("footer not shortened: %q", line)
+		}
 	}
 }
 
@@ -144,6 +158,15 @@ func TestFormatting(t *testing.T) {
 	for got, want := range cases {
 		if got != want {
 			t.Errorf("got %q, want %q", got, want)
+		}
+	}
+	for in, want := range map[string]string{
+		"unspecified":           "Not stated (published intensity or load model)",
+		"electricity/DK":        "Electricity, DK grid",
+		"glec/fuel/eu/diesel/l": "glec/fuel/eu/diesel/l",
+	} {
+		if got := carrierName(in); got != want {
+			t.Errorf("carrierName(%q) = %q", in, got)
 		}
 	}
 	if p := period(sootcase.Period{From: "2026-01-01"}); p != "from 1 Jan 2026" {
