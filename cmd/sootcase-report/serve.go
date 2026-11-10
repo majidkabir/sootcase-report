@@ -35,6 +35,8 @@ func serveMain(args []string) error {
 		Addr:              *addr,
 		Handler:           newServer(*url, *key),
 		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       5 * time.Minute, // a 10 MiB upload on a slow line
+		IdleTimeout:       2 * time.Minute,
 		WriteTimeout:      11 * time.Minute,
 	}
 	log.Printf("sootcase-report listening on %s, calculating with %s", *addr, *url)

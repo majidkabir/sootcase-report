@@ -389,7 +389,6 @@ func hubs(l *layout, r *sootcase.Report) {
 	rows = append(rows, []string{"\x00All hubs", number(float64(r.Coverage.HubStops), 0), "", kg(r.Total.HubWTWKg), ""})
 	l.table([]col{{"Hub type", 2.4, false}, {"Stops", 0.8, true}, {"Tonnes handled", 1.2, true},
 		{"WTW kg CO2e", 1.2, true}, {"g CO2e/t", 1.1, true}}, rows)
-	l.para("Hub factors are well-to-wheel only, so hubs are not split into operational and energy provision emissions.", pdf.Regular, 8, grey)
 }
 
 func energy(l *layout, r *sootcase.Report) {
@@ -399,16 +398,23 @@ func energy(l *layout, r *sootcase.Report) {
 	l.heading("Emissions by energy carrier")
 	rows := [][]string{}
 	for _, e := range r.Energy {
-		rows = append(rows, []string{label(e.Carrier), kg(e.TTWKg), kg(e.WTTKg), kg(e.WTWKg), pct(e.Share)})
+		rows = append(rows, []string{carrierName(e.Carrier), kg(e.TTWKg), kg(e.WTTKg), kg(e.WTWKg), pct(e.Share)})
 	}
 	l.table([]col{{"Energy carrier", 2.4, false}, {"TTW kg CO2e", 1.2, true}, {"WTT kg CO2e", 1.2, true},
 		{"WTW kg CO2e", 1.2, true}, {"Share of transport", 1.2, true}}, rows)
-	for _, e := range r.Energy {
-		if e.Carrier == "unspecified" {
-			l.para("\"Unspecified\" is transport calculated from default or own intensity values, which don't name the fuel or electricity used.", pdf.Regular, 8, grey)
-			break
-		}
+	l.para("Fuels are named by the fuel factor used for measured fuel; electricity by the grid it was drawn from.", pdf.Regular, 8, grey)
+}
+
+// carrierName shows the API's carrier id: "unspecified", a fuel factor id
+// such as "glec/fuel/eu/diesel/l", or "electricity/<country>".
+func carrierName(c string) string {
+	switch {
+	case c == "unspecified":
+		return "Not stated (published intensity or load model)"
+	case strings.HasPrefix(c, "electricity/"):
+		return "Electricity, " + strings.TrimPrefix(c, "electricity/") + " grid"
 	}
+	return c
 }
 
 func ghg(l *layout, r *sootcase.Report) {
@@ -628,6 +634,14 @@ func footers(l *layout, r *sootcase.Report) {
 	left := "Calculated with Sootcase (sootcase.org)"
 	if r.Organisation != "" {
 		left = r.Organisation + " · " + period(r.Period) + " · " + left
+	}
+	room := contentW - pdf.Width(pdf.Regular, 7.5, fmt.Sprintf("Page %d of %d", n, n)) - 20
+	if pdf.Width(pdf.Regular, 7.5, left) > room {
+		r := []rune(left)
+		for len(r) > 1 && pdf.Width(pdf.Regular, 7.5, string(r)+"…") > room {
+			r = r[:len(r)-1]
+		}
+		left = strings.TrimSpace(string(r)) + "…"
 	}
 	for i := 0; i < n; i++ {
 		d.SetPage(i)
