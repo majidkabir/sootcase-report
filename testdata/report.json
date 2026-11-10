@@ -11,7 +11,7 @@
  "datasets": [
   "desnz-2026+nl-iww-2026+eu-mrv-2024+glec-3.3"
  ],
- "generated": "2026-11-10T17:26:22Z",
+ "generated": "2026-11-10T18:16:27Z",
  "coverage": {
   "shipments": 4,
   "calculated": 3,
@@ -326,7 +326,7 @@
     ],
     "hubs": [
      {
-      "hub_id": "",
+      "hub_id": "h1",
       "hub_type": "warehouse",
       "wtw_kg": 710,
       "data_type": "default",

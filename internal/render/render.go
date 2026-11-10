@@ -645,8 +645,11 @@ func footers(l *layout, r *sootcase.Report) {
 	d := l.d
 	n := d.Pages()
 	left := "Calculated with Sootcase (sootcase.org)"
+	if r.Period.From != "" || r.Period.To != "" {
+		left = period(r.Period) + " · " + left
+	}
 	if r.Organisation != "" {
-		left = r.Organisation + " · " + period(r.Period) + " · " + left
+		left = r.Organisation + " · " + left
 	}
 	room := contentW - pdf.Width(pdf.Regular, 7.5, fmt.Sprintf("Page %d of %d", n, n)) - 20
 	if pdf.Width(pdf.Regular, 7.5, left) > room {

@@ -1,0 +1,9 @@
+shipment_id,weight_kg,teu,teu_net_tonnes,cargo_type,leg_id,mode,vehicle_type,distance_km,distance_type,from_code,to_code,fuel,fuel_amount,load_tonnes,energy_kwh_per_tkm,country,own_wtw_g_per_tkm,own_factor_source,hub_id,hub_type,hub_containers
+E1,8000,,,,l1,road,hgv,250,actual,,,,,,0.08,DNK,,,,,
+F1,12000,,,,l1,road,hgv,400,sfd,,,diesel,140,,,,,,,,
+O1,5000,,,,l1,road,hgv,300,,,,,,,,,62,Carrier X 2025 report,,,
+L1,9000,,,,l1,road,hgv_artic,500,sfd,,,,,16,,,,,,,
+T1,,2,10,container,l1,sea,container_ship,8000,sfd,,,,,,,,,,,,
+T1,,,,,t1,,,,,,,,,,,,,,ctT,intermodal_terminal,2
+R1,15000,,,temperature_controlled,l1,road,hgv,200,,,,,,,,,,,,,
+R1,,,,,h1,,,,,,,,,,,,,,w1,warehouse,

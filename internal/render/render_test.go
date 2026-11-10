@@ -149,6 +149,35 @@ func TestVeryLongTextIsClipped(t *testing.T) {
 	}
 }
 
+// Every kind of input: electricity, measured fuel, own value, load model,
+// containers with a per-container hub, a temperature-controlled warehouse.
+func TestRichReport(t *testing.T) {
+	b, err := os.ReadFile("../../testdata/rich.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	r, err := sootcase.Decode(b)
+	if err != nil {
+		t.Fatal(err)
+	}
+	txt, _ := text(t, r)
+	for _, want := range []string{
+		"Electricity, DNK grid", "glec/fuel/eu/diesel/l", "Not stated (published intensity",
+		"Models and their parameters", "load_factor_source", "Intermodal terminal", "Warehouse",
+		"Primary data", "Actual", "6 of 6",
+	} {
+		if !strings.Contains(txt, want) {
+			t.Errorf("missing %q", want)
+		}
+	}
+	// No period given: the footer doesn't say "not stated".
+	for _, line := range strings.Split(txt, "\n") {
+		if strings.Contains(line, "Page 1 of") && strings.Contains(line, "not stated") {
+			t.Errorf("footer: %q", line)
+		}
+	}
+}
+
 func TestEmptyReport(t *testing.T) {
 	r := &sootcase.Report{Level: "transport_or_hub_services"}
 	b := PDF(r)

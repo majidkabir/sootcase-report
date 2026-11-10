@@ -18,12 +18,12 @@ sootcase-report -org "Acme Logistics" -from 2026-01-01 -to 2026-03-31 -scope3 4 
 The CSV has [Sootcase's batch columns](https://github.com/majidkabir/sootcase#inputs), one row per leg or hub stop, up to 10,000 shipments (10 MiB) per report:
 
 ```csv
-shipment_id,weight_kg,leg_id,mode,vehicle_type,from_code,to_code,distance_km,hub_type
-CPH-RTM-1,12000,truck,road,hgv,DKCPH,DEHAM,,
-CPH-RTM-1,,feeder,sea,container_ship,DEHAM,NLRTM,,
-CPH-FRA-AIR,800,flight,air,air_freight,CPH,FRA,,
-HAM-MIL-RAIL,20000,train,rail,freight_train,DEHAM,ITMIL,,
-HAM-MIL-RAIL,,dc,,,,,,warehouse
+shipment_id,weight_kg,leg_id,mode,vehicle_type,from_code,to_code,distance_km,hub_id,hub_type
+CPH-RTM-1,12000,truck,road,hgv,DKCPH,DEHAM,,,
+CPH-RTM-1,,feeder,sea,container_ship,DEHAM,NLRTM,,,
+CPH-FRA-AIR,800,flight,air,air_freight,CPH,FRA,,,
+HAM-MIL-RAIL,20000,train,rail,freight_train,DEHAM,ITMIL,,,
+HAM-MIL-RAIL,,,,,,,,dc,warehouse
 ```
 
 | Flag | |
@@ -38,7 +38,7 @@ HAM-MIL-RAIL,,dc,,,,,,warehouse
 | `-url` | another Sootcase server, e.g. your own `sootcase serve` (env `SOOTCASE_URL`) |
 | `-o -` | write the PDF to stdout |
 
-Shipments that fail are left out of the totals and listed in the report with the reason; failures caused by a routing service not answering are marked to send again.
+Shipments that fail are left out of the totals; the report counts them by reason and lists the first 20 with their error. Failures caused by a routing service not answering are marked to send again.
 
 ## Upload page
 
@@ -55,7 +55,7 @@ curl -H "Authorization: Bearer $SOOTCASE_API_KEY" -H "Content-Type: text/csv" \
   --data-binary @shipments.csv "localhost:8090/report?organisation=Acme&scope3_category=4" -o report.pdf
 ```
 
-The caller's key (`Authorization: Bearer` or `api_key`) is passed on to Sootcase, so quotas stay per user; `-key` / `SOOTCASE_API_KEY` on the server is used only when a request brings none. Errors from Sootcase come back with their status (401, 429, 503 with `Retry-After`).
+The caller's key (`Authorization: Bearer` or `api_key`) is passed on to Sootcase, so quotas stay per user; `-key` / `SOOTCASE_API_KEY` on the server is used only when a request brings none. Errors from Sootcase come back with their status (401, 429, 503 with `Retry-After`); an upload over 10 MiB gets 413.
 
 ## How it works
 
@@ -69,7 +69,7 @@ sootcase serve -addr :8080 &
 SOOTCASE_TEST_URL=http://localhost:8080 go test ./...
 ```
 
-Without `SOOTCASE_TEST_URL` the tests use a saved answer (`testdata/report.json`). With [poppler](https://poppler.freedesktop.org) installed they also read the text back out of the PDFs.
+Without `SOOTCASE_TEST_URL` the tests use a saved answer (`testdata/report.json`). With [poppler](https://poppler.freedesktop.org) installed they also read the text back out of the PDFs, and with [qpdf](https://qpdf.sourceforge.io) they check the PDF structure.
 
 ## License
 
