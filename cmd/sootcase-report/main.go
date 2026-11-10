@@ -87,6 +87,17 @@ Flags:
 		if fs.NArg() > 0 {
 			return errors.New("give either -json or a CSV, not both")
 		}
+		// The saved answer already has these; silently ignoring them would mislead.
+		var calcOnly []string
+		fs.Visit(func(f *flag.Flag) {
+			switch f.Name {
+			case "url", "key", "save-json", "title", "org", "from", "to", "reference", "scope3", "declare-iso", "road-legs", "timeout":
+				calcOnly = append(calcOnly, "-"+f.Name)
+			}
+		})
+		if len(calcOnly) > 0 {
+			return fmt.Errorf("%s only apply when calculating a CSV; a saved report keeps what it was calculated with", strings.Join(calcOnly, ", "))
+		}
 		b, err := os.ReadFile(*jsonIn)
 		if err != nil {
 			return err
@@ -137,7 +148,7 @@ Flags:
 	c := rep.Coverage
 	msg := fmt.Sprintf("%s: %d of %d shipments, %.3f t CO2e WTW", *out, c.Calculated, c.Shipments, rep.Total.WTWKg/1000)
 	if c.Failed > 0 {
-		msg += fmt.Sprintf(", %d failed (listed in the report)", c.Failed)
+		msg += fmt.Sprintf(", %d failed (see Coverage in the report)", c.Failed)
 	}
 	fmt.Fprintln(os.Stderr, strings.TrimSpace(msg))
 	return nil

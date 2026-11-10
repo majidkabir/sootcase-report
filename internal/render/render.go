@@ -635,8 +635,8 @@ func method(l *layout, r *sootcase.Report) {
 		l.para(r.Reference, pdf.Regular, 8.5, ink)
 		l.y += 4
 	}
-	l.para("Emissions are calculated per leg as tonne-km × emission intensity (× a distance adjustment factor where the distance type differs from the factor's), or from measured fuel or energy where given, following the GLEC Framework v3.3 and ISO 14083:2023. "+
-		"Every leg's distance, method, data type and factor source are in the per-shipment results. GLEC Framework default values: Smart Freight Centre, used with permission; no affiliation or endorsement is implied.", pdf.Regular, 8.5, grey)
+	l.para("Emissions are calculated per leg as tonne-km × emission intensity (× a distance adjustment factor where the distance type differs from the factor's), or from measured fuel or energy where given, and per hub stop as tonnes (or containers) handled × the hub's emission intensity, following the GLEC Framework v3.3 and ISO 14083:2023. "+
+		"Every leg's distance, method, data type and factor source are in Sootcase's per-shipment results for the same input. GLEC Framework default values: Smart Freight Centre, used with permission; no affiliation or endorsement is implied.", pdf.Regular, 8.5, grey)
 	l.y += 4
 	l.para("These are calculations for your own reporting. Sootcase is not certified against ISO 14083; conformity depends on how the data was collected and the boundaries chosen.", pdf.Regular, 8.5, grey)
 }
