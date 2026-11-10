@@ -64,7 +64,7 @@ func newServer(baseURL, key string) http.Handler {
 		r.Body = http.MaxBytesReader(w, r.Body, maxUpload+1<<20)
 		field, csv, err := requestInput(r)
 		if err != nil {
-			httpError(w, http.StatusBadRequest, err.Error())
+			httpError(w, statusFor(err, http.StatusBadRequest), err.Error())
 			return
 		}
 		defer csv.Close()
@@ -101,7 +101,7 @@ func newServer(baseURL, key string) http.Handler {
 				httpError(w, e.Status, err.Error())
 				return
 			}
-			httpError(w, http.StatusBadGateway, err.Error())
+			httpError(w, statusFor(err, http.StatusBadGateway), err.Error())
 			return
 		}
 		b := render.PDF(rep)
@@ -127,7 +127,7 @@ func requestInput(r *http.Request) (func(string) string, readCloser, error) {
 		return q.Get, r.Body, nil
 	}
 	if err := r.ParseMultipartForm(maxUpload); err != nil {
-		return nil, nil, fmt.Errorf("send a multipart form with the CSV as \"file\", or a text/csv body: %v", err)
+		return nil, nil, fmt.Errorf("send a multipart form with the CSV as \"file\", or a text/csv body: %w", err)
 	}
 	f, _, err := r.FormFile("file")
 	if err != nil {
@@ -154,6 +154,15 @@ func fileName(r *sootcase.Report) string {
 		s = s[:120]
 	}
 	return s + ".pdf"
+}
+
+// statusFor is 413 when the upload was over the limit, otherwise def.
+func statusFor(err error, def int) int {
+	var tooBig *http.MaxBytesError
+	if errors.As(err, &tooBig) {
+		return http.StatusRequestEntityTooLarge
+	}
+	return def
 }
 
 func httpError(w http.ResponseWriter, status int, msg string) {

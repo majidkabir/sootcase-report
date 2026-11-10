@@ -149,3 +149,30 @@ func TestServePassesAPIErrors(t *testing.T) {
 		t.Errorf("%d %v", rec.Code, rec.Header())
 	}
 }
+
+func TestServeTooBig(t *testing.T) {
+	api, _ := fakeSootcase(t)
+	h := newServer(api.URL, "")
+	big := bytes.Repeat([]byte("a"), maxUpload+2<<20)
+
+	req := httptest.NewRequest("POST", "/report", bytes.NewReader(big))
+	req.Header.Set("Content-Type", "text/csv")
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+	if rec.Code != http.StatusRequestEntityTooLarge {
+		t.Errorf("csv body: %d %s", rec.Code, rec.Body.String())
+	}
+
+	var body bytes.Buffer
+	mw := multipart.NewWriter(&body)
+	fw, _ := mw.CreateFormFile("file", "big.csv")
+	fw.Write(big)
+	mw.Close()
+	req = httptest.NewRequest("POST", "/report", &body)
+	req.Header.Set("Content-Type", mw.FormDataContentType())
+	rec = httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+	if rec.Code != http.StatusRequestEntityTooLarge {
+		t.Errorf("multipart: %d %s", rec.Code, rec.Body.String())
+	}
+}

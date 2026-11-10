@@ -87,6 +87,15 @@ func TestDocumentStructure(t *testing.T) {
 		}
 	}
 
+	// With qpdf installed, check the file's structure.
+	if _, err := exec.LookPath("qpdf"); err == nil {
+		f := filepath.Join(t.TempDir(), "q.pdf")
+		os.WriteFile(f, b, 0o644)
+		if out, err := exec.Command("qpdf", "--check", f).CombinedOutput(); err != nil {
+			t.Errorf("qpdf --check: %v\n%s", err, out)
+		}
+	}
+
 	// With poppler installed, check the text comes back out.
 	if _, err := exec.LookPath("pdftotext"); err != nil {
 		t.Skip("pdftotext not installed")

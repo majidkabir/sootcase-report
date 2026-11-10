@@ -131,6 +131,24 @@ func TestLongOrganisationFitsFooter(t *testing.T) {
 	}
 }
 
+func TestVeryLongTextIsClipped(t *testing.T) {
+	r := load(t)
+	r.Title = strings.Repeat("Quarterly freight emissions ", 40)
+	r.Organisation = strings.Repeat("Organisation ", 80)
+	r.Coverage.Failures = []sootcase.Failure{{ShipmentID: "X", Error: strings.Repeat("very long error ", 600)}}
+	txt, b := text(t, r)
+	if strings.Count(txt, "…") < 3 {
+		t.Errorf("expected title, organisation and the long error to be clipped")
+	}
+	// The cover still fits on page 1 with the key figures.
+	f := filepath.Join(t.TempDir(), "p1.pdf")
+	os.WriteFile(f, b, 0o644)
+	p1, _ := exec.Command("pdftotext", "-f", "1", "-l", "1", f, "-").Output()
+	if !strings.Contains(string(p1), "Key figures") {
+		t.Error("cover pushed the key figures off page 1")
+	}
+}
+
 func TestEmptyReport(t *testing.T) {
 	r := &sootcase.Report{Level: "transport_or_hub_services"}
 	b := PDF(r)
@@ -168,6 +186,12 @@ func TestFormatting(t *testing.T) {
 		if got := carrierName(in); got != want {
 			t.Errorf("carrierName(%q) = %q", in, got)
 		}
+	}
+	if s := scope3Label(4); s != "Scope 3, category 4 (upstream transportation and distribution)" {
+		t.Error(s)
+	}
+	if s := scope3Label(7); s != "Scope 3, category 7" {
+		t.Error(s)
 	}
 	if p := period(sootcase.Period{From: "2026-01-01"}); p != "from 1 Jan 2026" {
 		t.Error(p)
