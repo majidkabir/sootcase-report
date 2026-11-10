@@ -24,8 +24,8 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Install poppler (PDF text checks)
-        run: sudo apt-get update -q && sudo apt-get install -yq poppler-utils
+      - name: Install poppler and qpdf (PDF checks)
+        run: sudo apt-get update -q && sudo apt-get install -yq poppler-utils qpdf
 
       - name: Start a local Sootcase server
         run: |

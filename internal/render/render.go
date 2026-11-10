@@ -122,6 +122,19 @@ func (l *layout) bullets(items []string, size float64) {
 	}
 }
 
+// maxCellLines keeps a table row shorter than a page.
+const maxCellLines = 40
+
+// clip keeps the first n lines, marking a cut with "…".
+func clip(lines []string, n int) []string {
+	if len(lines) <= n {
+		return lines
+	}
+	lines = append([]string(nil), lines[:n]...)
+	lines[n-1] += " …"
+	return lines
+}
+
 type col struct {
 	title string
 	w     float64 // share of the content width
@@ -187,7 +200,7 @@ func (l *layout) table(cols []col, rows [][]string) {
 			if i < len(row) {
 				v = row[i]
 			}
-			cells[i] = pdf.Wrap(f, size, v, widths[i]-2*pad)
+			cells[i] = clip(pdf.Wrap(f, size, v, widths[i]-2*pad), maxCellLines)
 			lines = max(lines, len(cells[i]))
 		}
 		h := float64(lines)*lh + 2*pad
@@ -242,7 +255,7 @@ func cover(l *layout, r *sootcase.Report) {
 	if title == "" {
 		title = "Freight GHG emissions report"
 	}
-	for _, line := range pdf.Wrap(pdf.Bold, 22, title, contentW) {
+	for _, line := range clip(pdf.Wrap(pdf.Bold, 22, title, contentW), 4) {
 		d.Text(margin, l.y, pdf.Bold, 22, ink, line)
 		l.y += 28
 	}
@@ -255,14 +268,14 @@ func cover(l *layout, r *sootcase.Report) {
 	meta = append(meta, [2]string{"Reporting period", period(r.Period)})
 	meta = append(meta, [2]string{"Level", level(r.Level)})
 	if r.GHG.Scope3Category != 0 {
-		meta = append(meta, [2]string{"GHG Protocol", fmt.Sprintf("Scope 3, category %d (%s)", r.GHG.Scope3Category, scope3Name(r.GHG.Scope3Category))})
+		meta = append(meta, [2]string{"GHG Protocol", scope3Label(r.GHG.Scope3Category)})
 	}
 	meta = append(meta, [2]string{"Emission factors", strings.Join(r.Datasets, ", ")})
 	if !r.Generated.IsZero() {
 		meta = append(meta, [2]string{"Calculated", r.Generated.UTC().Format("2 January 2006, 15:04 UTC")})
 	}
 	for _, m := range meta {
-		lines := pdf.Wrap(pdf.Regular, 9.5, m[1], contentW-120)
+		lines := clip(pdf.Wrap(pdf.Regular, 9.5, m[1], contentW-120), 6)
 		d.Text(margin, l.y, pdf.Bold, 9.5, grey, m[0])
 		for i, line := range lines {
 			d.Text(margin+120, l.y+float64(i)*13, pdf.Regular, 9.5, ink, line)
@@ -422,7 +435,7 @@ func ghg(l *layout, r *sootcase.Report) {
 	g := r.GHG
 	shipper := "Scope 3 (transport bought)"
 	if g.Scope3Category != 0 {
-		shipper = fmt.Sprintf("Scope 3, category %d: %s", g.Scope3Category, scope3Name(g.Scope3Category))
+		shipper = scope3Label(g.Scope3Category)
 	}
 	l.sub("For the company buying the transport")
 	l.table([]col{{"Scope", 4, false}, {"kg CO2e", 1.2, true}}, [][]string{{shipper, kg(g.Scope3ShipperKg)}})
@@ -759,6 +772,15 @@ func level(s string) string {
 		return "Transport or hub services (GLEC Framework v3.3, Section 2, Chapter 1)"
 	}
 	return label(s)
+}
+
+// scope3Label is "Scope 3, category 4 (upstream transportation and distribution)".
+func scope3Label(c int) string {
+	s := fmt.Sprintf("Scope 3, category %d", c)
+	if n := scope3Name(c); n != "" {
+		s += " (" + n + ")"
+	}
+	return s
 }
 
 func scope3Name(c int) string {
